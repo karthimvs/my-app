@@ -9,9 +9,17 @@ pipeline {
                 git 'https://github.com/javaparser/javaparser-maven-sample.git'
             }
         }
-        
-        
-        
+	    
+	stage ('Compile Maven') {
+            steps {
+		script {
+                	def mvnHome = tool 'maven3', type: 'maven'
+                	sh "${mvnHome}/bin/mvn clean package"
+                	sh 'mv target/myweb*.war target/app1.war'
+            	}
+	    }	    
+        }
+             
         stage('SonarQube Analysis') {
             steps {
                 script {
@@ -24,7 +32,6 @@ pipeline {
                 }    
             }	    
         }
-            
 
         stage ('Docker Build') {
             steps {
