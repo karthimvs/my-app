@@ -45,13 +45,13 @@ pipeline {
 		   }catch(error){
 			    // do nothing if there is an exception
 		   }
-	 }
 
         stage ('Docker Deploy - Test Environment') {
             steps {
                 sh "docker run -itd -p 9955:8080 --name InterProject interproject/inter-v1:latest"
             }
         }
+	 }
 
         stage ('Get Approve') {
             steps {
