@@ -6,9 +6,11 @@ pipeline {
     stages {
 	    
 	    stage ('SCM Checkout') {
+		    steps {
 		    git https://github.com/karthimvs/my-app.git
-	    }
-	    
+		    }
+		}	
+		        
 	stage ('Compile Maven') {
             steps {
 		script {
