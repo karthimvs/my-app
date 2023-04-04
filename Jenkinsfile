@@ -4,7 +4,7 @@ pipeline {
     }
 
     stages {
-        stage (Git Pull) {
+        stage ('Git Pull') {
             steps {
                 git 'https://github.com/javaparser/javaparser-maven-sample.git'
             }
@@ -21,7 +21,7 @@ pipeline {
         stage ("Send SonarQube Analysis") {
             steps {
                 def scannerHome = tool 'sonarqube'
-                withSonarQubeEnv = (sonar) {
+                withSonarQubeEnv = ('sonar') {
                     sh "${scannerHome}/bin/sonar-scanner \
                     -Dsonar.projectKey=intern-java-project \
                     -Dsonar.login=5fbe28051908c3f10d88da4f6ec22c6a40ab8168"
