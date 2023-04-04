@@ -1,41 +1,50 @@
-node{
-   stage('SCM Checkout'){
-     git 'https://github.com/damodaranj/my-app.git'
-   }
-   stage('Compile-Package'){
-
-      def mvnHome =  tool name: 'maven3', type: 'maven'   
-      sh "${mvnHome}/bin/mvn clean package"
-	  sh 'mv target/myweb*.war target/newapp.war'
-   }
-   stage('SonarQube Analysis') {
-	        def mvnHome =  tool name: 'maven3', type: 'maven'
-	        withSonarQubeEnv('sonar') { 
-	          sh "${mvnHome}/bin/mvn sonar:sonar"
-	        }
-	    }
-   stage('Build Docker Imager'){
-   sh 'docker build -t saidamo/myweb:0.0.2 .'
-   }
-   stage('Docker Image Push'){
-   withCredentials([string(credentialsId: 'dockerPass', variable: 'dockerPassword')]) {
-   sh "docker login -u saidamo -p ${dockerPassword}"
+pipeline {
+    agent {
+        label 'docker-agent1'
     }
-   sh 'docker push saidamo/myweb:0.0.2'
-   }
-   stage('Nexus Image Push'){
-   sh "docker login -u admin -p admin123 65.2.127.216:8083"
-   sh "docker tag saidamo/myweb:0.0.2 65.2.127.216:8083/damo:1.0.0"
-   sh 'docker push 65.2.127.216:8083/damo:1.0.0'
-   }
-   stage('Remove Previous Container'){
-	try{
-		sh 'docker rm -f tomcattest'
-	}catch(error){
-		//  do nothing if there is an exception
-	}
-   stage('Docker deployment'){
-   sh 'docker run -d -p 8090:8080 --name tomcattest saidamo/myweb:0.0.2' 
-   }
-}
+
+    stages {
+        stage (Git Pull) {
+            steps {
+                git 'https://github.com/javaparser/javaparser-maven-sample.git'
+            }
+        }
+
+        stage (Compile Maven) {
+            steps {
+                def mvnHome = tool 'maven3', type: 'maven'
+                sh "${mvnHome}/bin/mvn clean package"
+                sh 'mv target/myweb*.war target/app1.war'
+            }
+        }
+
+        stage (Send SonarQube Analysis) {
+            steps {
+                def scannerHome = tool 'sonarqube'
+                withSonarQubeEnv = (sonar) {
+                    sh "${scannerHome}/bin/sonar-scanner \
+                    -Dsonar.projectKey=intern-java-project \
+                    -Dsonar.login=5fbe28051908c3f10d88da4f6ec22c6a40ab8168"
+                }
+            }
+        }
+
+        stage (Docker Build) {
+            steps {
+                sh "docker build -t interproject/inter-v1 ."
+            }
+        }
+
+        stage (Docker Deploy - Test Environment) {
+            steps {
+                sh "docker run -itd -p 9955:8080 -name Inter Project interproject/inter-v1"
+            }
+        }
+
+        stage (Get Approve) {
+            steps {
+                input "Approval for to deploy production Server"
+            }
+        }
+    }
 }
