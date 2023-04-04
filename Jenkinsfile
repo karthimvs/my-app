@@ -10,10 +10,10 @@ pipeline {
             }
         }
         
-stage (Send SonarQube Analysis) {
+stage ('Send SonarQube Analysis') {
             steps {
                 def scannerHome = tool 'sonarqube'
-                withSonarQubeEnv = (sonar) {
+                withSonarQubeEnv('sonar') {
                     sh "${scannerHome}/bin/sonar-scanner \
                     -Dsonar.projectKey=intern-java-project \
                     -Dsonar.login=5fbe28051908c3f10d88da4f6ec22c6a40ab8168"
@@ -21,19 +21,19 @@ stage (Send SonarQube Analysis) {
             }
         }
 
-        stage (Docker Build) {
+        stage ('Docker Build') {
             steps {
                 sh "docker build -t interproject/inter-v1 ."
             }
         }
 
-        stage (Docker Deploy - Test Environment) {
+        stage ('Docker Deploy - Test Environment') {
             steps {
                 sh "docker run -itd -p 9955:8080 -name Inter Project interproject/inter-v1"
             }
         }
 
-        stage (Get Approve) {
+        stage ('Get Approve') {
             steps {
                 input "Approval for to deploy production Server"
             }
