@@ -10,29 +10,19 @@ pipeline {
             }
         }
         
-        stage ('Compile Maven') {
-            steps {
-                script {
-                def mvnHome = tool 'maven3', type: 'maven'
-                sh "${mvnHome}/bin/mvn clean package"
-             }
-            }
-           }
         
         
-        stage ('Send SonarQube Analysis') {
+        stage('SonarQube Analysis') {
             steps {
                 script {
-                    def scannerHome = tool 'sonarqube'
-                    withSonarQubeEnv('sonar') {
-                        sh "${scannerHome}/bin/sonar-scanner \
-                        -Dsonar.projectKey=intern-java-project \
-                        -Dsonar.login=5fbe28051908c3f10d88da4f6ec22c6a40ab8168 \
-                        -Dsonar.java.binaries=**/target/classes"
-                    }
-                }   
-            }
+	                def mvnHome =  tool name: 'maven3', type: 'maven'
+	                withSonarQubeEnv('sonar') { 
+	                sh "${mvnHome}/bin/mvn sonar:sonar"
+	                }
+                }    
+            }	    
         }
+            
 
         stage ('Docker Build') {
             steps {
