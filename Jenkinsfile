@@ -10,6 +10,13 @@ pipeline {
             }
         }
         
+        stage ('Compile Maven') {
+            steps {
+                def mvnHome = tool 'maven3', type: 'maven'
+                sh "${mvnHome}/bin/mvn clean package"
+            }
+        }
+        
         
         stage ('Send SonarQube Analysis') {
             steps {
