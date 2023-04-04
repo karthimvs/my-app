@@ -4,16 +4,15 @@ pipeline {
     }
 
     stages {
-        stage ('Git Pull') {
-            steps {
-                git 'https://github.com/javaparser/javaparser-maven-sample.git'
-            }
-        }
+	    
+	    stage ('SCM Checkout') {
+		    git https://github.com/karthimvs/my-app.git
+	    }
 	    
 	stage ('Compile Maven') {
             steps {
 		script {
-                	def mvnHome = tool name: 'maven3', type: 'maven'
+                	def mvnHome = tool name: 'maven3.6', type: 'maven'
                 	sh "${mvnHome}/bin/mvn clean package"
                 	sh 'mv target/myweb*.war target/app1.war'
             	}
@@ -23,7 +22,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 script {
-	                def mvnHome =  tool name: 'maven3', type: 'maven'
+	                def mvnHome =  tool name: 'maven3.6', type: 'maven'
 	                withSonarQubeEnv('sonar') { 
 	                sh "${mvnHome}/bin/mvn sonar:sonar \
 			-Dsonar.projectKey=intern-java-project \
