@@ -38,6 +38,13 @@ pipeline {
                 sh "docker build -t interproject/inter-v1 ."
             }
         }
+	    
+	 stage ('Remove Existing Container'){
+		try{
+			sh 'docker rm -f InterProject'
+		   }catch(error){
+			    // do nothing if there is an exception
+		   }
 
         stage ('Docker Deploy - Test Environment') {
             steps {
