@@ -34,7 +34,7 @@ pipeline {
 
         stage ('Docker Deploy - Test Environment') {
             steps {
-                sh "docker run -itd -p 9955:8080 -name Inter Project interproject/inter-v1"
+                sh "docker run -itd -p 9955:8080 -n Inter Project interproject/inter-v1"
             }
         }
 
