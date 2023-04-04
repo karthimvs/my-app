@@ -2,6 +2,10 @@ pipeline {
     agent {
         label 'docker-agent1'
     }
+    
+    tools {
+        maven 'Maven 3.6.1'
+    }
 
     stages {
         stage ('Git Pull') {
@@ -10,10 +14,9 @@ pipeline {
             }
         }
         
-        stage (Compile Maven) {
+        stage ('Compile Maven') {
             steps {
-                def mvnHome = tool 'maven3', type: 'maven'
-                sh "${mvnHome}/bin/mvn clean package"
+                sh "mvn clean package"
                 sh 'mv target/myweb*.war target/app1.war'
             }
         }
