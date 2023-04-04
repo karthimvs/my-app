@@ -10,7 +10,7 @@ pipeline {
             }
         }
 
-        stage (Compile Maven) {
+        stage ("Compile Maven") {
             steps {
                 def mvnHome = tool 'maven3', type: 'maven'
                 sh "${mvnHome}/bin/mvn clean package"
@@ -18,7 +18,7 @@ pipeline {
             }
         }
 
-        stage (Send SonarQube Analysis) {
+        stage ("Send SonarQube Analysis") {
             steps {
                 def scannerHome = tool 'sonarqube'
                 withSonarQubeEnv = (sonar) {
@@ -29,19 +29,19 @@ pipeline {
             }
         }
 
-        stage (Docker Build) {
+        stage ("Docker Build") {
             steps {
                 sh "docker build -t interproject/inter-v1 ."
             }
         }
 
-        stage (Docker Deploy - Test Environment) {
+        stage ("Docker Deploy - Test Environment") {
             steps {
                 sh "docker run -itd -p 9955:8080 -name Inter Project interproject/inter-v1"
             }
         }
 
-        stage (Get Approve) {
+        stage ("Get Approve") {
             steps {
                 input "Approval for to deploy production Server"
             }
