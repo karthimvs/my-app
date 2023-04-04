@@ -19,6 +19,7 @@ pipeline {
                         sh "${scannerHome}/bin/sonar-scanner \
                         -Dsonar.projectKey=intern-java-project \
                         -Dsonar.login=5fbe28051908c3f10d88da4f6ec22c6a40ab8168"
+                        -Dsonar.java.binaries=**/target/classes
                     }
                 }   
             }
