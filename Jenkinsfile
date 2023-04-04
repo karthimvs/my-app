@@ -45,6 +45,7 @@ pipeline {
 		   }catch(error){
 			    // do nothing if there is an exception
 		   }
+	 }
 
         stage ('Docker Deploy - Test Environment') {
             steps {
