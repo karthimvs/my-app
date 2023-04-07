@@ -62,7 +62,6 @@ pipeline {
 
         stage ('Get Approve') {
             steps {
-                mail
                 input "Approval for to deploy production Server"
             }
         }
